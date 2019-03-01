@@ -1,5 +1,5 @@
 {
-    "watch":["src/**/*.js"],
+    "watch":["src/**/*.js", ".env"],
     "ext": "js, env",
     "verbose": false,
     "exec": "babel-node src/api/app.js"

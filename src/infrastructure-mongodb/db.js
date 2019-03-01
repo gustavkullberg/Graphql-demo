@@ -1,15 +1,27 @@
-import  {Db, MongoError, MongoCLient} from 'mongodb';
-import { rejects } from 'assert';
+import { Db, MongoError, MongoClient } from 'mongodb';
+
+import { Agreement, IPersistedAgreement } from 'domain-models';
 
 let db = null;
 
 export async function connectToDb(url) {
-    MongoCLient.connect(url, (err, client) => {
-        if(err) {
-            rejects(err);
-            return;
-        }
-        db = client.db(encodeURIComponent("database"))
-        resolve()
-    })
+    if (db) { return Promise.resolve(); }
+
+    return (resolve, reject) => {
+        // tslint:disable-next-line:max-line-length
+        MongoClient.connect(url, (err, client) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            db = client.db(encodeURIComponent(process.env.MONGO_DATABASE));
+            resolve();
+        });
+    };
 }
+
+export const collections = {
+    get agreements() {
+        return db.collection(Agreement.name);
+    }
+};
