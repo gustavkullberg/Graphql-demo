@@ -1,3 +1,5 @@
+import { PrimeObject } from "./PrimeObject";
+
 export function CalculateAllPrimesBelow(number) {
     let result = [];
         
@@ -9,5 +11,6 @@ export function CalculateAllPrimesBelow(number) {
         }
         if(couldBePrime) result.push(i)    
     }
-    return result;
+    const obj = new PrimeObject(number, result);
+    return obj;
 }

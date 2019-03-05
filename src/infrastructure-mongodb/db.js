@@ -1,27 +1,37 @@
-import { Db, MongoError, MongoClient } from 'mongodb';
+import { Db, MongoError, MongoClient } from "mongodb";
 
-import { Agreement, IPersistedAgreement } from 'domain-models';
+import { primes } from "domain";
 
 let db = null;
 
 export async function connectToDb(url) {
-    if (db) { return Promise.resolve(); }
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(url, (err, client) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      db = client.db(encodeURIComponent(process.env.MONGO_DATABASE));
+      console.log("Connected to DB :)");
+      resolve();
+    });
+  });
+}
 
-    return (resolve, reject) => {
-        // tslint:disable-next-line:max-line-length
-        MongoClient.connect(url, (err, client) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            db = client.db(encodeURIComponent(process.env.MONGO_DATABASE));
-            resolve();
-        });
-    };
+async function myfunc() {
+  MongoClient.connect(url, (err, client) => {
+    if (err) {
+      console.log(2);
+      reject(err);
+      return;
+    }
+    db = client.db(encodeURIComponent(process.env.MONGO_DATABASE));
+    resolve();
+  });
 }
 
 export const collections = {
-    get agreements() {
-        return db.collection(Agreement.name);
-    }
+  get primes() {
+    return db.collection("primes");
+  }
 };
